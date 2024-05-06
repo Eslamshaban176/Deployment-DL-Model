@@ -69,16 +69,30 @@ def home():
 def predict_route():
     if 'audio_file' not in request.files:
         return "No audio file uploaded", 400
+
     audio_file = request.files['audio_file']
-    print("=" * 50)
-    print("audio file: ",audio_file)
-    print("=" * 50)
-    if not audio_file:
-        audio_file = "audio.mp3"
+
+    # Ensure that the uploaded file is an audio file
+    if not is_audio_file(audio_file.filename):
+        return "Invalid audio file format", 400
+
+    # Validate the file before saving or processing
+    if audio_file.filename == '':
+        return "No selected file", 400
 
     prediction = make_prediction(audio_file)
 
     return jsonify({"emotion": emotions[prediction]})
+
+
+def is_audio_file(filename):
+    """
+    Checks if the filename corresponds to an audio file.
+    You might need to enhance this function based on your requirements.
+    """
+    allowed_extensions = {'mp3', 'wav', 'ogg', 'flac', 'aac'}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions
+
 
     # return render_template("chat.html", prediction_text=f"Type Of Emotion is {emotions[prediction]}".title())
 
