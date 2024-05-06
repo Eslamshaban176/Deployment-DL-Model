@@ -5,7 +5,7 @@ from tensorflow.keras.models import Sequential, model_from_json
 import pickle
 
 # Flask app initialization
-flask_app = Flask(__name__)
+app = Flask(__name__)
 
 # Load the model
 json_file = open('CNN_model.json', 'r')
@@ -61,11 +61,11 @@ def make_prediction(path1):
     return y_pred
 
 # Flask routes
-@flask_app.route("/")
+@app.route("/")
 def home():
     return render_template("chat.html")
 
-@flask_app.route("/predict_route", methods=["POST"])
+@app.route("/predict_route", methods=["POST"])
 def predict_route():
     if 'audio_file' not in request.files:
         return "No audio file uploaded", 400
@@ -84,4 +84,4 @@ def predict_route():
 
 # Main function
 if __name__ == "__main__":
-    flask_app.run(debug=False, host="0.0.0.0")
+    app.run(debug=False, host="0.0.0.0", port="5000")
